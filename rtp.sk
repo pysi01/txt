@@ -1,0 +1,11 @@
+# Skript command to randomly teleport a player when typing /rtp
+
+command /rtp:
+    trigger:
+        set {_world} to world of player
+        set {_x} to random integer between -1000 and 1000
+        set {_z} to random integer between -1000 and 1000
+        # Find the highest safe block at that location
+        set {_y} to y-coordinate of highest solid block at location at {_x}, 0, {_z} in {_world}
+        teleport player to location at {_x}, {_y} + 1, {_z} in {_world}
+        send "&aTeleported to a random location!" to player
