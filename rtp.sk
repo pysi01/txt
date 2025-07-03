@@ -18,13 +18,16 @@ command /rtp:
         loop 30 times:
             set {_x} to random integer between -1000 and 1000
             set {_z} to random integer between -1000 and 1000
-            set {_y} to y-coordinate of highest solid block at location at {_x}, 0, {_z} in {_world}
+            set {_baseLoc} to location at {_x}, 0, {_z} in {_world}
+            set {_highest} to highest solid block at {_baseLoc}
+            if {_highest} is not set:
+                continue
+            set {_y} to y-coordinate of {_highest}
             if {_y} < 60:
                 continue
-            set {_loc} to location at {_x}, {_y}, {_z} in {_world}
-            if block at {_loc} is water:
+            if block at {_highest} is water:
                 continue
-            if block at {_loc} is lava:
+            if block at {_highest} is lava:
                 continue
             set {_destY} to {_y} + 1
             teleport player to location at {_x}, {_destY}, {_z} in {_world}
