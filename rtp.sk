@@ -3,9 +3,30 @@
 command /rtp:
     trigger:
         set {_world} to world of player
-        set {_x} to random integer between -1000 and 1000
-        set {_z} to random integer between -1000 and 1000
-        # Find the highest safe block at that location
-        set {_y} to y-coordinate of highest solid block at location at {_x}, 0, {_z} in {_world}
-        teleport player to location at {_x}, {_y} + 1, {_z} in {_world}
-        send "&aTeleported to a random location!" to player
+        if {rtp.casting.%player%} is set:
+            send "&cMusisz chwilę poczekać." to player
+            stop
+        set {rtp.casting.%player%} to true
+        apply slowness 2 to player for 3 seconds
+        apply blindness 1 to player for 3 seconds
+        send "&7Teleportacja za 3..." to player
+        wait 1 second
+        send "&7Teleportacja za 2..." to player
+        wait 1 second
+        send "&7Teleportacja za 1..." to player
+        wait 1 second
+        loop 30 times:
+            set {_x} to random integer between -1000 and 1000
+            set {_z} to random integer between -1000 and 1000
+            set {_y} to y-coordinate of highest solid block at location at {_x}, 0, {_z} in {_world}
+            if {_y} < 60:
+                continue
+            set {_loc} to location at {_x}, {_y}, {_z} in {_world}
+            if block at {_loc} is water or block at {_loc} is lava:
+                continue
+            teleport player to location at {_x}, {_y} + 1, {_z} in {_world}
+            send "&aPrzeteleportowano na kordy: %{_x}% %{_y}+1% %{_z}%" to player
+            delete {rtp.casting.%player%}
+            stop
+        send "&cNie znaleziono bezpiecznego miejsca." to player
+        delete {rtp.casting.%player%}
