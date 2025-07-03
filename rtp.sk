@@ -1,0 +1,38 @@
+# Skript command to randomly teleport a player when typing /rtp
+
+command /rtp:
+    trigger:
+        set {_world} to world of player
+        if {rtp.casting.%player%} is set:
+            send "&cMusisz chwilę poczekać." to player
+            stop
+        set {rtp.casting.%player%} to true
+        apply slowness 2 to player for 3 seconds
+        apply blindness 1 to player for 3 seconds
+        send "&7Teleportacja za 3..." to player
+        wait 1 second
+        send "&7Teleportacja za 2..." to player
+        wait 1 second
+        send "&7Teleportacja za 1..." to player
+        wait 1 second
+        loop 30 times:
+            set {_x} to random integer between -1000 and 1000
+            set {_z} to random integer between -1000 and 1000
+            set {_baseLoc} to location at {_x}, 0, {_z} in {_world}
+            set {_highest} to highest solid block at {_baseLoc}
+            if {_highest} is not set:
+                continue
+            set {_y} to y-coordinate of {_highest}
+            if {_y} < 60:
+                continue
+            if block at {_highest} is water:
+                continue
+            if block at {_highest} is lava:
+                continue
+            set {_destY} to {_y} + 1
+            teleport player to location at {_x}, {_destY}, {_z} in {_world}
+            send "&aPrzeteleportowano na kordy: %{_x}% %{_destY}% %{_z}%" to player
+            delete {rtp.casting.%player%}
+            stop
+        send "&cNie znaleziono bezpiecznego miejsca." to player
+        delete {rtp.casting.%player%}
